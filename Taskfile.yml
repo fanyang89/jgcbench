@@ -1,10 +1,48 @@
 version: "3"
 
 tasks:
+  default:
+    cmds:
+      - task: clean
+      - task: g1gc
+      - task: zgc
+
   g1gc:
     cmds:
+      - >
+        java -XX:+UseG1GC -Xmx2g -Xms2g -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1
+        -Xlog:"gc*,safepoint=info:g1gc.log:time,uptime,level,tags"
+        -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
       - cat g1gc.log | ./scripts/g1gc.sh
 
   zgc:
     cmds:
+      - >
+        java -XX:+UseZGC -Xmx2g -Xms2g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1
+        -Xlog:"gc*,safepoint=info:zgc.log:time,uptime,level,tags"
+        -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - cat zgc.log | ./scripts/zgc.sh
+
+  clean:
+    cmds:
+      - rm -f g1gc.log* zgc.log*
+
+  single-core:
+    cmds:
+      - task: clean
+
+      # g1gc
+      - >
+        taskset -c 10
+        java -XX:+UseG1GC -Xmx2g -Xms2g -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1
+        -Xlog:"gc*,safepoint=info:g1gc.log:time,uptime,level,tags"
+        -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - cat g1gc.log | ./scripts/g1gc.sh
+
+      # zgc
+      - >
+        taskset -c 10
+        java -XX:+UseZGC -Xmx2g -Xms2g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1
+        -Xlog:"gc*,safepoint=info:zgc.log:time,uptime,level,tags"
+        -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
       - cat zgc.log | ./scripts/zgc.sh

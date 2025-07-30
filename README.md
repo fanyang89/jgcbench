@@ -55,12 +55,12 @@ You can also run the benchmarks manually:
 ```bash
 # Run with G1GC
 java -XX:+UseG1GC -Xmx2g -Xms2g -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1 \
--Xlog:gc*,safepoint=info:g1gc.log:time,uptime,level,tags \
+-Xlog:"gc*,safepoint=info:g1gc.log:time,uptime,level,tags" \
 -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # Run with ZGC
 java -XX:+UseZGC -Xmx2g -Xms2g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 \
--Xlog:gc*,safepoint=info:zgc.log:time,uptime,level,tags \
+-Xlog:"gc*,safepoint=info:zgc.log:time,uptime,level,tags" \
 -jar target/jgcbench-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
