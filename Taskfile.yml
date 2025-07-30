@@ -1,12 +1,10 @@
-# https://taskfile.dev
-
-version: '3'
-
-vars:
-  GREETING: Hello, World!
+version: "3"
 
 tasks:
-  default:
+  g1gc:
     cmds:
-      - echo "{{.GREETING}}"
-    silent: true
+      - cat g1gc.log | ./scripts/g1gc.sh
+
+  zgc:
+    cmds:
+      - cat zgc.log | ./scripts/zgc.sh
